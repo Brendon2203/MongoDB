@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
 
 const app = express();
 const port = 3000;
@@ -86,6 +87,21 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(port, () => {
+const server = http.createServer((req, res) => {
+    // Servir o arquivo index.html
+    if (req.url === '/' || req.url === '/index.html') {
+        fs.readFile(path.join(__dirname, 'index.html'), (err, content) => {
+            if (err) {
+                res.writeHead(500);
+                res.end('Erro ao carregar o arquivo');
+                return;
+            }
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(content);
+        });
+    }
+});
+
+server.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);
 }); 
