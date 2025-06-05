@@ -30,9 +30,47 @@
         .romantic-bg {
             background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
         }
+        /* Loading Screen Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .loading-content {
+            text-align: center;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #ff69b4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="montserrat-font bg-pink-50 min-h-screen">
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p class="text-xl text-pink-600 dancing-font">Criando seu pedido de namoro...</p>
+            <p class="text-sm text-gray-600 mt-2">Isso pode levar alguns segundos</p>
+        </div>
+    </div>
+
     <div id="app" class="container mx-auto px-4 py-8">
 
         <!-- Form Section -->
@@ -42,11 +80,11 @@
                 <div class="space-y-6">
                     <div>
                         <label for="loved-name" class="block text-sm font-medium text-gray-700">Nome da Pessoa Amada</label>
-                        <input type="text" id="loved-name" name="lovedName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500" placeholder="Digite o nome da pessoa especial" required />
+                        <input type="text" id="loved-name" name="lovedName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500" placeholder="Digite o nome da pessoa especial" required accept="text/*" />
                     </div>
                     <div>
                         <label for="message" class="block text-sm font-medium text-gray-700">Sua Mensagem Especial</label>
-                        <textarea id="message" name="message" rows="5" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500" placeholder="Escreva sua declaração de amor..." required></textarea>
+                        <textarea id="message" name="message" rows="5" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500" placeholder="Escreva sua declaração de amor..." required accept="text/*"></textarea>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Fotos Especiais (até 5)</label>
@@ -230,33 +268,44 @@
                     return;
                 }
 
-                // Converter fotos para base64
-                const photos = [];
-                for (let file of fileUploadInput.files) {
-                    const base64 = await new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = e => resolve(e.target.result);
-                        reader.readAsDataURL(file);
-                    });
-                    photos.push(base64);
+                // Mostrar tela de loading
+                document.getElementById('loading-screen').style.display = 'flex';
+
+                try {
+                    // Converter fotos para base64
+                    const photos = [];
+                    for (let file of fileUploadInput.files) {
+                        const base64 = await new Promise((resolve) => {
+                            const reader = new FileReader();
+                            reader.onload = e => resolve(e.target.result);
+                            reader.readAsDataURL(file);
+                        });
+                        photos.push(base64);
+                    }
+
+                    const pedido = {
+                        id: Date.now().toString(),
+                        lovedName: form.lovedName.value,
+                        message: form.message.value,
+                        photos: photos,
+                        spotifyLink: form.spotifyLink.value
+                    };
+
+                    // Codificar os dados para a URL
+                    const dadosCodificados = btoa(JSON.stringify(pedido));
+                    
+                    // Atualizar a URL com os dados
+                    window.history.pushState({}, '', `?dados=${dadosCodificados}`);
+
+                    // Mostrar o pedido
+                    showPedido(pedido);
+                } catch (error) {
+                    console.error('Erro ao processar pedido:', error);
+                    alert('Ocorreu um erro ao processar seu pedido. Por favor, tente novamente.');
+                } finally {
+                    // Esconder tela de loading
+                    document.getElementById('loading-screen').style.display = 'none';
                 }
-
-                const pedido = {
-                    id: Date.now().toString(),
-                    lovedName: form.lovedName.value,
-                    message: form.message.value,
-                    photos: photos,
-                    spotifyLink: form.spotifyLink.value
-                };
-
-                // Codificar os dados para a URL
-                const dadosCodificados = btoa(JSON.stringify(pedido));
-                
-                // Atualizar a URL com os dados
-                window.history.pushState({}, '', `?dados=${dadosCodificados}`);
-
-                // Mostrar o pedido
-                showPedido(pedido);
             });
 
             // Verificar se há dados na URL
