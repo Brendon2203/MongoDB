@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Pedido de Namoro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
@@ -133,7 +134,7 @@
             </div>
 
             <div class="p-8 text-center">
-                <p id="display-message" class="text-xl text-gray-800 italic leading-relaxed"></p>
+                <p id="display-message" class="text-xl text-gray-800 leading-relaxed"></p>
             </div>
 
             <div class="relative h-96 overflow-hidden">
@@ -291,8 +292,8 @@
                         spotifyLink: form.spotifyLink.value
                     };
 
-                    // Codificar os dados para a URL
-                    const dadosCodificados = btoa(JSON.stringify(pedido));
+                    // Codificar os dados para a URL usando encodeURIComponent
+                    const dadosCodificados = encodeURIComponent(JSON.stringify(pedido));
                     
                     // Atualizar a URL com os dados
                     window.history.pushState({}, '', `?dados=${dadosCodificados}`);
@@ -307,19 +308,6 @@
                     document.getElementById('loading-screen').style.display = 'none';
                 }
             });
-
-            // Verificar se há dados na URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const dadosCodificados = urlParams.get('dados');
-
-            if (dadosCodificados) {
-                try {
-                    const pedido = JSON.parse(atob(dadosCodificados));
-                    showPedido(pedido);
-                } catch (error) {
-                    console.error('Erro ao decodificar dados:', error);
-                }
-            }
 
             function showPedido(pedido) {
                 formSection.classList.add('hidden');
@@ -345,20 +333,28 @@
                 // Embed Spotify
                 spotifyPlayer.innerHTML = '';
                 if (pedido.spotifyLink) {
-                    const iframe = document.createElement('iframe');
-                    iframe.src = pedido.spotifyLink.replace('open.spotify.com', 'open.spotify.com/embed');
-                    iframe.width = '300';
-                    iframe.height = '80';
-                    iframe.frameBorder = '0';
-                    iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
-                    spotifyPlayer.appendChild(iframe);
+                    try {
+                        const iframe = document.createElement('iframe');
+                        iframe.src = pedido.spotifyLink.replace('open.spotify.com', 'open.spotify.com/embed');
+                        iframe.width = '300';
+                        iframe.height = '80';
+                        iframe.frameBorder = '0';
+                        iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+                        spotifyPlayer.appendChild(iframe);
+                    } catch (error) {
+                        console.error('Erro ao carregar player do Spotify:', error);
+                    }
                 }
 
                 // Gerar QR Code com a URL atual
-                const qr = qrcode(0, 'M');
-                qr.addData(window.location.href);
-                qr.make();
-                qrcodeContainer.innerHTML = qr.createImgTag(5);
+                try {
+                    const qr = qrcode(0, 'M');
+                    qr.addData(window.location.href);
+                    qr.make();
+                    qrcodeContainer.innerHTML = qr.createImgTag(5);
+                } catch (error) {
+                    console.error('Erro ao gerar QR Code:', error);
+                }
             }
 
             backBtn.addEventListener('click', function() {
@@ -369,6 +365,19 @@
                 previewContainer.classList.add('hidden');
                 window.history.pushState({}, '', window.location.pathname);
             });
+
+            // Verificar se há dados na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const dadosCodificados = urlParams.get('dados');
+
+            if (dadosCodificados) {
+                try {
+                    const pedido = JSON.parse(decodeURIComponent(dadosCodificados));
+                    showPedido(pedido);
+                } catch (error) {
+                    console.error('Erro ao decodificar dados:', error);
+                }
+            }
 
             // Funções de compartilhamento
             function compartilharWhatsApp() {
