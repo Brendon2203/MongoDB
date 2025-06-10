@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code do Pedido de Namoro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .dancing-font { font-family: 'Dancing Script', cursive; }
+        #qrcode-container img {
+            width: 300px;
+            height: 300px;
+            image-rendering: pixelated;
+        }
+    </style>
+</head>
+<body class="bg-pink-50 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-xl shadow-lg text-center max-w-md w-full mx-4">
+        <h1 class="text-3xl font-bold text-pink-600 dancing-font mb-6">QR Code do Pedido de Namoro</h1>
+        <div id="qrcode-container" class="mb-6 flex justify-center"></div>
+        <button onclick="downloadQRCode()" class="bg-pink-600 text-white px-6 py-3 rounded-md hover:bg-pink-700 transition-colors dancing-font text-xl">
+            Baixar QR Code
+        </button>
+    </div>
+
+    <script>
+        // Obter dados da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const dadosCodificados = urlParams.get('dados');
+
+        if (dadosCodificados) {
+            try {
+                // Gerar QR Code com configurações otimizadas
+                const qr = qrcode(0, 'H'); // Usando nível de correção de erro 'H' (mais robusto)
+                qr.addData(window.location.href);
+                qr.make();
+                
+                // Criar o QR Code com tamanho maior e melhor qualidade
+                const qrImage = qr.createImgTag(10, 0);
+                document.getElementById('qrcode-container').innerHTML = qrImage;
+            } catch (error) {
+                console.error('Erro ao gerar QR Code:', error);
+                document.getElementById('qrcode-container').innerHTML = '<p class="text-red-500">Erro ao gerar o QR Code. Por favor, tente novamente.</p>';
+            }
+        } else {
+            document.getElementById('qrcode-container').innerHTML = '<p class="text-red-500">Nenhum pedido encontrado para gerar o QR Code.</p>';
+        }
+
+        // Função para baixar QR Code
+        function downloadQRCode() {
+            const canvas = document.querySelector('#qrcode-container img');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = 'pedido-namoro-qrcode.png';
+                link.href = canvas.src;
+                link.click();
+            }
+        }
+    </script>
+</body>
+</html> 
