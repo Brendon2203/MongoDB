@@ -115,9 +115,12 @@
                         <input type="text" id="spotify-link" name="spotifyLink" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500" placeholder="Cole o link da música do Spotify" />
                         <p class="mt-1 text-sm text-gray-500">Exemplo: https://open.spotify.com/track/...</p>
                     </div>
-                    <div class="flex justify-center">
+                    <div class="flex justify-center space-x-4">
                         <button type="submit" class="px-6 py-3 bg-pink-600 text-white font-medium rounded-md shadow-sm hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 dancing-font text-xl">
                             Criar Meu Pedido de Namoro
+                        </button>
+                        <button type="button" id="gerar-qrcode-btn" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dancing-font text-xl">
+                            Gerar QR Code
                         </button>
                     </div>
                 </div>
@@ -205,6 +208,64 @@
             const spotifyPlayer = document.getElementById('spotify-player');
             const qrcodeContainer = document.getElementById('qrcode');
             const backBtn = document.getElementById('back-btn');
+            const gerarQRCodeBtn = document.getElementById('gerar-qrcode-btn');
+
+            // Função para gerar QR Code
+            gerarQRCodeBtn.addEventListener('click', async function() {
+                // Validar dados do formulário
+                if (!form.lovedName.value.trim()) {
+                    alert('Digite o nome da pessoa amada');
+                    return;
+                }
+                if (!form.message.value.trim()) {
+                    alert('Digite sua mensagem especial');
+                    return;
+                }
+                if (fileUploadInput.files.length === 0) {
+                    alert('Envie pelo menos uma foto');
+                    return;
+                }
+                if (fileUploadInput.files.length > 5) {
+                    alert('Envie no máximo 5 fotos');
+                    return;
+                }
+
+                // Mostrar tela de loading
+                document.getElementById('loading-screen').style.display = 'flex';
+
+                try {
+                    // Converter fotos para base64
+                    const photos = [];
+                    for (let file of fileUploadInput.files) {
+                        const base64 = await new Promise((resolve) => {
+                            const reader = new FileReader();
+                            reader.onload = e => resolve(e.target.result);
+                            reader.readAsDataURL(file);
+                        });
+                        photos.push(base64);
+                    }
+
+                    const pedido = {
+                        id: Date.now().toString(),
+                        lovedName: form.lovedName.value,
+                        message: form.message.value,
+                        photos: photos,
+                        spotifyLink: form.spotifyLink.value
+                    };
+
+                    // Codificar os dados para a URL
+                    const dadosCodificados = encodeURIComponent(JSON.stringify(pedido));
+                    
+                    // Redirecionar para a página do QR Code
+                    window.location.href = `qrcode.html?dados=${dadosCodificados}`;
+                } catch (error) {
+                    console.error('Erro ao processar pedido:', error);
+                    alert('Ocorreu um erro ao processar seu pedido. Por favor, tente novamente.');
+                } finally {
+                    // Esconder tela de loading
+                    document.getElementById('loading-screen').style.display = 'none';
+                }
+            });
 
             // Preview imagens carregadas
             fileUploadInput.addEventListener('change', () => {

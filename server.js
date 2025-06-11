@@ -87,21 +87,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-const server = http.createServer((req, res) => {
-    // Servir o arquivo index.html
-    if (req.url === '/' || req.url === '/index.html') {
-        fs.readFile(path.join(__dirname, 'index.html'), (err, content) => {
-            if (err) {
-                res.writeHead(500);
-                res.end('Erro ao carregar o arquivo');
-                return;
-            }
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end(content);
-        });
-    }
+// Servir o arquivo qrcode.html
+app.get('/qrcode.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'qrcode.html'));
 });
 
-server.listen(port, () => {
+app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);
 }); 
