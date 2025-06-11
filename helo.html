@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helo </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Montserrat:wght@300;400;600&display=swap');
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #fff5f5;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .title {
+            font-family: 'Dancing Script', cursive;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .heart-beat {
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .message-box {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,235,235,0.9) 100%);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(255, 105, 140, 0.2);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .image-carousel {
+            scroll-snap-type: x mandatory;
+        }
+        
+        .image-slide {
+            scroll-snap-align: start;
+            flex: 0 0 100%;
+        }
+        
+        .falling-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: #ff6b81;
+            animation: falling linear infinite;
+            opacity: 0.9;
+        }
+        
+        @keyframes falling {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .spotify-player {
+            transition: all 0.3s ease;
+        }
+        
+        .spotify-player:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(255, 105, 140, 0.3);
+        }
+        
+        .nav-dot {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-dot.active {
+            background-color: #ff6b81;
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-10 px-4">
+    <!-- Falling Hearts Background -->
+    <div class="falling-hearts" id="hearts-container"></div>
+    
+    <!-- Main Content -->
+    <div class="max-w-4xl w-full flex flex-col items-center space-y-8 z-10">
+        <!-- Title -->
+        <h1 class="title text-5xl md:text-6xl font-bold text-pink-600 mb-4">Helo 👸</h1>
+        
+        <!-- Beating Heart -->
+        <div class="heart-beat text-4xl text-pink-500 my-4">❤️</div>
+        <h2 class="title text-3xl font-bold text-pink-600 mb-4 text-center">You're special, always</h2>
+        <!-- First Message -->
+        <div class="message-box p-6 md:p-8 w-full max-w-2xl text-center">
+            <p class="text-lg md:text-xl leading-relaxed text-gray-700">
+                Tem pessoas que chegam como perguntas,
+                mas você chegou como resposta — tranquila, sem pressa.
+                Como se o universo soubesse que eu precisava de um tipo de paz
+                que só se encontra quando o coração reconhece onde pousar.
+            </p>
+        </div>
+        <h2 class="title text-3xl font-bold text-pink-600 mb-4 text-center">Feliz dias dos Namorados! 😘</h2>
+        <!-- Image Carousel -->
+        <div class="w-full max-w-3xl relative group">
+            <div class="image-carousel flex overflow-x-auto snap-x snap-mandatory scroll-smooth rounded-xl shadow-xl" id="carousel">
+                <div class="image-slide min-w-full">
+                    <img src="img/WhatsApp Image 2025-06-11 at 17.49.50.jpeg" 
+                         alt="Romantic couple sunset" class="w-full h-full md:h-100 object-cover rounded-xl">
+                </div>
+                <div class="image-slide min-w-full">
+                    <img src="img/WhatsApp Image 2025-06-11 at 17.49.50 (1).jpeg" 
+                         alt="Couple holding hands" class="w-full h-full md:h-100 object-cover rounded-xl">
+                </div>
+                <div class="image-slide min-w-full">
+                    <img src="img/WhatsApp Image 2025-06-11 at 17.49.49.jpeg" 
+                         alt="Heart shaped hands" class="w-full h-full md:h-100 object-cover rounded-xl">
+                </div>
+                <div class="image-slide min-w-full">
+                    <img src="img/WhatsApp Image 2025-06-11 at 17.49.49 (2).jpeg" 
+                         alt="Love letters" class="w-full h-full md:h-100 object-cover rounded-xl">
+                </div>
+                <div class="image-slide min-w-full">
+                    <img src="img/WhatsApp Image 2025-06-11 at 17.49.49 (1).jpeg" 
+                         alt="Romantic dinner" class="w-full h-full md:h-100 object-cover rounded-xl">
+                </div>
+            </div>
+            
+            <!-- Navigation Dots -->
+            <div class="flex justify-center space-x-2 mt-4">
+                <button class="nav-dot w-3 h-3 rounded-full bg-pink-300" onclick="goToSlide(0)"></button>
+                <button class="nav-dot w-3 h-3 rounded-full bg-pink-300" onclick="goToSlide(1)"></button>
+                <button class="nav-dot w-3 h-3 rounded-full bg-pink-300" onclick="goToSlide(2)"></button>
+                <button class="nav-dot w-3 h-3 rounded-full bg-pink-300" onclick="goToSlide(3)"></button>
+                <button class="nav-dot w-3 h-3 rounded-full bg-pink-300" onclick="goToSlide(4)"></button>
+            </div>
+            
+            <!-- Navigation Arrows -->
+            <button class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 text-pink-600 w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md" onclick="prevSlide()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 text-pink-600 w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md" onclick="nextSlide()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        
+       
+        
+        <!-- Spotify Player -->
+        <div class="w-full max-w-2xl mt-8">
+            <h2 class="title text-3xl font-bold text-pink-600 mb-4 text-center">Remember That?</h2>
+            <div class="spotify-player bg-white rounded-xl shadow-xl overflow-hidden">
+                <iframe src="https://open.spotify.com/embed/track/1GwMQaZz6Au3QLDbjbMdme?si=PinPk2VGTkyGc4R6fCcSGw_source=generator" 
+                        width="100%" height="152" frameBorder="0" allowfullscreen="" 
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                        loading="lazy" class="rounded-xl"></iframe>
+            </div>
+             <!-- Second Message -->
+        <div class="message-box p-6 md:p-8 w-full max-w-2xl text-center mt-12">
+            <p class="text-lg md:text-xl leading-relaxed text-gray-700">
+                Call it what you want to
+                <br>
+                I want to wear his initial
+                <br>
+                On a chain round my neck
+                <br>
+                Chain round my neck
+                <br>
+                Not because he owns me
+                <br>
+                But 'cause he really knows me
+            </p>
+        </div>
+
+
+            <div class="mt-4 text-center">
+                <p hidden ="text-gray-600">Ou adicione seu próprio link do Spotify:</p>
+                <div hidden="flex mt-2">
+                    <input type="text" id="spotify-link" placeholder="Cole o link aqui" class="flex-grow px-4 py-2 rounded-l-lg border border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    <button onclick="updateSpotifyPlayer()" class="bg-pink-500 text-white px-4 py-2 rounded-r-lg hover:bg-pink-600 transition-colors">Atualizar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Falling Hearts Animation
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            const heartCount = 30;
+            
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(heart);
+            }
+        }
+        
+        // Image Carousel Functionality
+        let currentSlide = 0;
+        const carousel = document.getElementById('carousel');
+        const slides = document.querySelectorAll('.image-slide');
+        const dots = document.querySelectorAll('.nav-dot');
+        
+        function updateCarousel() {
+            carousel.scrollTo({
+                left: currentSlide * carousel.offsetWidth,
+                behavior: 'smooth'
+            });
+            
+            // Update dots
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            updateCarousel();
+        }
+        
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            updateCarousel();
+        }
+        
+        function goToSlide(index) {
+            currentSlide = index;
+            updateCarousel();
+        }
+        
+        // Auto-advance carousel
+        setInterval(nextSlide, 5000);
+        
+        // Spotify Player Update
+        function updateSpotifyPlayer() {
+            const linkInput = document.getElementById('spotify-link').value.trim();
+            if (!linkInput) return;
+            
+            // Extract track ID from various Spotify URL formats
+            let trackId = '';
+            const spotifyRegex = /spotify:track:([a-zA-Z0-9]+)|open\.spotify\.com\/track\/([a-zA-Z0-9]+)/;
+            const matches = linkInput.match(spotifyRegex);
+            
+            if (matches) {
+                trackId = matches[1] || matches[2];
+            }
+            
+            if (trackId) {
+                const player = document.querySelector('.spotify-player iframe');
+                player.src = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator`;
+            } else {
+                alert('Por favor, insira um link válido do Spotify');
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createHearts();
+            dots[0].classList.add('active');
+            
+            // Touch support for carousel
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            carousel.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+            
+            carousel.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+            
+            function handleSwipe() {
+                if (touchEndX < touchStartX - 50) {
+                    nextSlide();
+                }
+                if (touchEndX > touchStartX + 50) {
+                    prevSlide();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
